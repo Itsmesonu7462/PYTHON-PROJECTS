@@ -1,0 +1,56 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, classification_report
+
+# Load dataset
+df = load_digits()
+
+# Plot sample images
+_, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
+for ax, image, label in zip(axes, df.images, df.target):
+    ax.set_axis_off()
+    ax.imshow(image, cmap=plt.cm.gray_r, interpolation="nearest")
+    ax.set_title(f"training {label}")
+plt.show()
+
+# Inspect the shape and properties of the data
+print(df.images.shape)
+print(df.images[0])
+print(df.images[0].shape)
+print(len(df.images))
+
+# Reshape the data
+n_samples = len(df.images)
+data = df.images.reshape((n_samples, -1))
+print(data[0])
+print(data[0].shape)
+print(data.shape)
+print(data.min())
+print(data.max())
+
+# Normalize the data
+data = data / 16
+print(data.min())
+print(data.max())
+print(data[0])
+
+# Split the data into training and test sets
+x_train, x_test, y_train, y_test = train_test_split(data, df.target, test_size=0.3)
+print(x_train.shape, x_test.shape, y_train.shape, y_test.shape)
+
+# Train the RandomForestClassifier
+rf = RandomForestClassifier()
+rf.fit(x_train, y_train)
+
+# Make predictions
+y_pred = rf.predict(x_test)
+print(y_pred)
+
+# Evaluate the model
+conf_matrix = confusion_matrix(y_test, y_pred)
+print(conf_matrix)
+print(classification_report(y_test, y_pred))
